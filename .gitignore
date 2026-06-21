@@ -1,0 +1,64 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+prisma/dev.db
+prisma/dev.db-journal
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Shogo internal
+# Screenshots & uploads
+files/
+
+# Memory (agent workspace, not app data)
+memory/
+
+.shogo/logs
+.shogo/terminals
+.shogo/skills
+.shogo/agents
+.shogo/index.db
+.shogo/index.db-shm
+.shogo/index.db-shm
+.shogo/index.db-wal
+.shogo/sessions.db
+.shogo/sessions.db-shm
+.shogo/sessions.db-wal
+.shogo/__lsp_warmup__.ts
+.shogo-pool-assignment
+.shogo/index.db-wal
+.shogo-runtime-version
+.shogo-runtime-version
+.shogo-pool-assignment
+.shogo/sessions.db
+.shogo/sessions.db-shm
+.shogo/sessions.db-wal
+.shogo/__lsp_warmup__.ts
+.shogo-pool-assignment
+.shogo-runtime-version

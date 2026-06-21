@@ -1,0 +1,8 @@
+node_modules
+dist
+.shogo
+prisma/dev.db
+*.log
+.git
+.env
+.DS_Store

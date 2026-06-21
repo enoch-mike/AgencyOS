@@ -1,0 +1,204 @@
+// SHOGO:CUSTOM-START prisma-header
+// Managed by Shogo. Do not add a datasource `url` or change the generator `provider` — the database URL is configured in prisma.config.ts (Prisma 7+).
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+// SHOGO:CUSTOM-END
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String  @default("")
+  name      String?
+  avatar    String?
+  role      String   @default("member") // owner, admin, member
+  plan      String   @default("free") // free, starter, pro, enterprise
+  stripeCustomerId String? @map("stripe_customer_id")
+  subscriptionStatus String @default("active") @map("subscription_status") // active, canceled, past_due
+  subscriptionEndsAt DateTime? @map("subscription_ends_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  clients      Client[]
+  projects     Project[]
+  tasks        Task[]
+  meetings     Meeting[]
+  activityLogs ActivityLog[]
+
+  @@map("users")
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  company     String?
+  industry    String?
+  status      String   @default("active") // active, archived, churned
+  notes       String?
+  aiInsights  String? // AI-generated insights about the client
+  healthScore Int?     // 1-100 AI-calculated health
+  lastContact DateTime?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  projects    Project[]
+  meetings    Meeting[]
+  contacts    Contact[]
+
+  @@map("clients")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  status      String   @default("planning") // planning, active, paused, completed
+  priority    String   @default("medium") // low, medium, high, urgent
+  deadline    DateTime?
+  budget      Float?
+  spent       Float?   @default(0)
+  progress    Int?     @default(0) // 0-100
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+
+  tasks       Task[]
+  meetings    Meeting[]
+  milestones  Milestone[]
+  files       File[]
+
+  @@map("projects")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("todo") // todo, in_progress, review, done
+  priority    String   @default("medium") // low, medium, high, urgent
+  dueDate     DateTime?
+  assignedTo  String? // team member name
+  source      String? // manual, meeting, ai_captured
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+
+  meetingId   String?
+  meeting     Meeting? @relation(fields: [meetingId], references: [id])
+
+  tags        Tag[]
+
+  @@map("tasks")
+}
+
+model Meeting {
+  id          String   @id @default(cuid())
+  title       String
+  date        DateTime
+  duration    Int? // minutes
+  notes       String? // raw notes/transcript
+  summary     String? // AI-generated summary
+  actionItems String? // AI-extracted action items as JSON
+  source      String? // manual, zoom, google_meet, recorded
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+
+  projectId   String?
+  project     Project? @relation(fields: [projectId], references: [id])
+
+  tasks       Task[]
+
+  @@map("meetings")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  role      String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+
+  @@map("contacts")
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  name        String
+  dueDate     DateTime?
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+
+  @@map("milestones")
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String
+  color String?
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id])
+
+  @@map("tags")
+}
+
+model File {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  type      String?
+  size      Int?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  @@map("files")
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  action     String   // created, updated, completed, etc.
+  entityType String   // task, project, meeting, client
+  entityId   String
+  details    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
+}
