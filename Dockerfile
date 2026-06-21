@@ -31,6 +31,7 @@ COPY --from=build /app/server.tsx ./server.tsx
 COPY --from=build /app/custom-routes.ts ./custom-routes.ts
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/src/generated ./src/generated
+COPY --from=build /app/src/lib ./src/lib
 COPY --from=build /app/package.json ./
 COPY --from=build /app/shogo.config.json ./
 
