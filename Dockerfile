@@ -1,25 +1,23 @@
-# Stage 1: Install dependencies
-FROM oven/bun:1 AS base
+FROM oven/bun:1-slim AS base
 WORKDIR /app
 
 COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile 2>/dev/null || bun install
 
-# Stage 2: Build
 FROM base AS build
 COPY . .
 
-# Always swap to PostgreSQL for production
-RUN sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
+# Swap to PostgreSQL for production (bun is guaranteed available)
+RUN bun -e "
+  const fs = require('fs');
+  const s = fs.readFileSync('prisma/schema.prisma','utf-8');
+  fs.writeFileSync('prisma/schema.prisma', s.replace('provider = \"sqlite\"', 'provider = \"postgresql\"'));
+"
 
 RUN bun x prisma generate
 RUN bun run build
 
-# Stage 3: Production
-FROM oven/bun:1-slim AS production
-WORKDIR /app
-
-COPY --from=base /app/node_modules ./node_modules
+FROM base AS production
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/server.tsx ./server.tsx
 COPY --from=build /app/custom-routes.ts ./custom-routes.ts
