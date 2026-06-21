@@ -10,12 +10,7 @@ RUN bun install --frozen-lockfile 2>/dev/null || bun install
 FROM base AS build
 COPY . .
 
-# If DATABASE_URL starts with postgres, swap provider to postgresql
-RUN if [ -n "$DATABASE_URL" ] && echo "$DATABASE_URL" | grep -q "^postgresql"; then \
-      sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma; \
-    fi
-
-# Generate Prisma client
+# Generate Prisma client (SQLite by default)
 RUN bun x prisma generate
 
 # Build frontend
@@ -25,6 +20,9 @@ RUN bun run build
 FROM oven/bun:1-slim AS production
 WORKDIR /app
 
+# Install sed for start.sh
+RUN apt-get update && apt-get install -y --no-install-recommends sed && rm -rf /var/lib/apt/lists/*
+
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/server.tsx ./server.tsx
@@ -32,10 +30,10 @@ COPY --from=build /app/custom-routes.ts ./custom-routes.ts
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/src/generated ./src/generated
 COPY --from=build /app/src/lib ./src/lib
+COPY --from=build /app/src/components ./src/components
 COPY --from=build /app/package.json ./
 COPY --from=build /app/shogo.config.json ./
-
-COPY --from=build /app/start.sh ./start.sh
+COPY --from=build /app/start.sh ./
 RUN chmod +x ./start.sh
 
 EXPOSE 3001
