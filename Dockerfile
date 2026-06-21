@@ -7,7 +7,7 @@ RUN bun install --frozen-lockfile 2>/dev/null || bun install
 FROM base AS build
 COPY . .
 
-RUN sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma && bun x prisma generate && bun run build
+RUN bun -e "const fs=require('fs');const s=fs.readFileSync('prisma/schema.prisma','utf-8');fs.writeFileSync('prisma/schema.prisma',s.replace('provider = \"sqlite\"','provider = \"postgresql\"'))" && bun x prisma generate && bun run build
 
 FROM base AS production
 COPY --from=build /app/dist ./dist
