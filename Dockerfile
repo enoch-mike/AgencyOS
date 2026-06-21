@@ -2,18 +2,21 @@
 FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Install dependencies
 COPY package.json bun.lock* ./
 RUN bun install --frozen-lockfile 2>/dev/null || bun install
 
 # Stage 2: Build
 FROM base AS build
+ARG DATABASE_URL=""
 COPY . .
 
-# Generate Prisma client (SQLite by default)
-RUN bun x prisma generate
+# Detect PostgreSQL and swap provider before generating
+RUN if [ -n "$DATABASE_URL" ] && echo "$DATABASE_URL" | grep -q "^postgresql"; then \
+      echo "PostgreSQL detected at build time" && \
+      sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma; \
+    fi
 
-# Build frontend
+RUN bun x prisma generate
 RUN bun run build
 
 # Stage 3: Production
