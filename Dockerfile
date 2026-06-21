@@ -20,9 +20,6 @@ RUN bun run build
 FROM oven/bun:1-slim AS production
 WORKDIR /app
 
-# Install sed for start.sh
-RUN apt-get update && apt-get install -y --no-install-recommends sed && rm -rf /var/lib/apt/lists/*
-
 COPY --from=base /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/server.tsx ./server.tsx
