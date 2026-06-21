@@ -35,6 +35,9 @@ COPY --from=build /app/src/lib ./src/lib
 COPY --from=build /app/package.json ./
 COPY --from=build /app/shogo.config.json ./
 
+COPY --from=build /app/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
 EXPOSE 3001
 
-CMD ["bun", "run", "start"]
+CMD ["./start.sh"]
