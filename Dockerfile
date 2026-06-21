@@ -7,13 +7,7 @@ RUN bun install --frozen-lockfile 2>/dev/null || bun install
 FROM base AS build
 COPY . .
 
-# Swap to PostgreSQL for production (bun is guaranteed available)
-RUN bun -e "
-  const fs = require('fs');
-  const s = fs.readFileSync('prisma/schema.prisma','utf-8');
-  fs.writeFileSync('prisma/schema.prisma', s.replace('provider = \"sqlite\"', 'provider = \"postgresql\"'));
-"
-
+RUN bun swap-provider.js
 RUN bun x prisma generate
 RUN bun run build
 
