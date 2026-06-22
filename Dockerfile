@@ -24,6 +24,6 @@ COPY --from=build /app/db.production.ts ./db.production.ts
 RUN chmod +x ./start.sh
 RUN cp db.production.ts src/lib/db.ts && rm db.production.ts
 
-EXPOSE 3001
+EXPOSE 8080
 
 CMD ["./start.sh"]
