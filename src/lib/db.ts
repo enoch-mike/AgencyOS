@@ -7,7 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createClient() {
-  const isPostgres = process.env.DATABASE_URL?.startsWith('postgresql')
+  const isPostgres = process.env.DATABASE_URL?.startsWith('postgresql') || process.env.DATABASE_URL?.startsWith('postgres')
 
   if (isPostgres) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
