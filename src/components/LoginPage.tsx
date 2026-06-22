@@ -129,7 +129,7 @@ export function LoginPage({ onBackToLanding }: { onBackToLanding?: () => void })
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Alex Thompson"
-                    className="w-full pl-11 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
+                    className="w-full pl-11 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
                   />
                 </div>
               </div>
@@ -145,7 +145,7 @@ export function LoginPage({ onBackToLanding }: { onBackToLanding?: () => void })
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@agency.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
+                  className="w-full pl-11 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
                 />
               </div>
             </div>
@@ -161,7 +161,7 @@ export function LoginPage({ onBackToLanding }: { onBackToLanding?: () => void })
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="w-full pl-11 pr-12 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
+                  className="w-full pl-11 pr-12 py-3 sm:py-3.5 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-white"
                 />
                 <button
                   type="button"
