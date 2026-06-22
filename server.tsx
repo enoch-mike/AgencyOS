@@ -7,10 +7,15 @@
  * This file can be customized - it will not be overwritten if it exists.
  */
 
+console.log('🔍 [1/7] Importing hono...')
 import { Hono } from 'hono'
+console.log('🔍 [2/7] Importing serveStatic...')
 import { serveStatic } from 'hono/bun'
+console.log('🔍 [3/7] Importing customRoutes...')
 import customRoutes from './custom-routes'
+console.log('🔍 [4/7] Importing createToolsHandlers...')
 import { createToolsHandlers } from '@shogo-ai/sdk/tools/server'
+console.log('🔍 [5/7] All imports done')
 
 const app = new Hono()
 
@@ -40,6 +45,7 @@ app.route('/api', customRoutes)
 
 // Installed-integration tools proxy → forwards to the agent runtime
 // using RUNTIME_AUTH_SECRET + RUNTIME_PORT (auto-detected from env).
+console.log('🔍 [6/7] Setting up tools proxy...')
 const tools = createToolsHandlers({})
 app.post('/api/tools/execute', (c) => tools.execute(c.req.raw))
 app.get('/api/tools/schemas', (c) => tools.list(c.req.raw))
@@ -49,6 +55,7 @@ app.use('/*', serveStatic({ root: './dist' }))
 app.get('*', serveStatic({ path: './dist/index.html' }))
 
 const port = Number(process.env.PORT) || 3001
+console.log(`🔍 [7/7] Starting server on port ${port}...`)
 console.log(`🚀 Server running on http://localhost:${port}`)
 
 Bun.serve({ port, fetch: app.fetch })
