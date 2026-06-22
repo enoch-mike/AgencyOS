@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["bun"]
+
+[phases.install]
+cmds = ["bun install --frozen-lockfile || bun install"]
+
+[phases.build]
+cmds = [
+  "bun -e \"const fs=require('fs');const s=fs.readFileSync('prisma/schema.prisma','utf-8');fs.writeFileSync('prisma/schema.prisma',s.replace('provider = \\\"sqlite\\\"','provider = \\\"postgresql\\\"'))\"",
+  "bun x prisma generate",
+  "bun run build"
+]
+
+[start]
+cmd = "bun x prisma db push --accept-data-loss && bun run start"
