@@ -20,6 +20,7 @@ COPY --from=build /app/src/components ./src/components
 COPY --from=build /app/package.json ./
 COPY --from=build /app/shogo.config.json ./
 COPY --from=build /app/start.sh ./
+COPY --from=build /app/db.production.ts ./src/lib/db.ts
 RUN chmod +x ./start.sh
 
 EXPOSE 3001
