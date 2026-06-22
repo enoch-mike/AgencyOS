@@ -33,9 +33,9 @@ export function LoginPage({ onBackToLanding }: { onBackToLanding?: () => void })
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col lg:flex-row">
       {/* Left Panel — Branding (hidden on mobile, full-height on desktop) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 via-indigo-600 to-violet-700 p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 via-indigo-600 to-violet-700 p-12 flex-col justify-between relative overflow-hidden text-white">
         <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
         <div className="relative z-10">
